@@ -30,14 +30,16 @@ const cardTemplate = document.querySelector('#card-template').content;
 
 
 // @todo: Функция создания карточки
-function createCard(cardData, deleteFunction, likeFunction) {
+function createCard(cardData, deleteFunction, likeFunction, handleImgModal) {
     const newCard = cardTemplate.querySelector('.card').cloneNode(true);
-    newCard.querySelector('.card__image').src = cardData.link;
-    newCard.querySelector('.card__image').alt = cardData.name;
+    const cardImg = newCard.querySelector('.card__image');
+    cardImg.src = cardData.link;
+    cardImg.alt = cardData.name;
     newCard.querySelector('.card__title').textContent = cardData.name;
+    cardImg.addEventListener('click', () => handleImgModal(cardData));
     const deleteCardBtn = newCard.querySelector('.card__delete-button');
     deleteCardBtn.addEventListener('click', function () {
-        deleteFunction(newCard);
+      deleteFunction(newCard);
     });
     const addLikeBtn = newCard.querySelector('.card__like-button');
     addLikeBtn.addEventListener('click', (e) => likeFunction(e));
