@@ -13,3 +13,18 @@
   position: relative;
   overflow: hidden;
 }
+
+.card__like {
+  display: flex;
+  flex-direction: column;
+}
+
+.card__like-count {
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400px;
+  font-size: 13px;
+  text-align: center;
+  line-height: 15.73px;
+  margin-top: 3px;
+}
