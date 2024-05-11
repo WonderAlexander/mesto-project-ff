@@ -53,11 +53,11 @@ const profileAvatar = document.querySelector('.profile__image');
 function handleFormSubmit(evt) {
     evt.preventDefault();
     editLoadingState(true, editProfileFormBtn)
-    profileTitle.textContent = nameInput.value;
-    profileJob.textContent = jobInput.value;
     // Обновление данных пользователя на сервере
     updateUserData(nameInput.value, jobInput.value)
         .then(() => {
+            profileTitle.textContent = nameInput.value;
+            profileJob.textContent = jobInput.value;
             closeModal(popupEdit);
         })
         .catch( (err) => {
