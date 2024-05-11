@@ -1,29 +1,29 @@
 // Функция показа сообщеняи об ошибке
-const showInputError = (formElement, inputElement) => {
+const showInputError = (formElement, inputElement, validationConfig) => {
     const errorElement = formElement.querySelector(`.popup__error_${inputElement.name}`);
-    inputElement.classList.add('popup__input_type_error');
-    errorElement.classList.add('popup__error_visible');
+    inputElement.classList.add(validationConfig.inputErrorClass);
+    errorElement.classList.add(validationConfig.errorClass);
     errorElement.textContent = inputElement.validationMessage;
 };
 
 // Функция скрытия сообщения об ошибке
-const hideInputError = (formElement, inputElement) => {
+const hideInputError = (formElement, inputElement, validationConfig) => {
     const errorElement = formElement.querySelector(`.popup__error_${inputElement.name}`);
-    inputElement.classList.remove('popup__input_type_error');
-    errorElement.classList.remove('popup__error_visible');
+    inputElement.classList.remove(validationConfig.inputErrorClass);
+    errorElement.classList.remove(validationConfig.errorClass);
     errorElement.textContent = '';
 };
 
 // Функция проверки валидации
-const checkInputValidity = (formElement, inputList, inputElement) => {
+const checkInputValidity = (formElement, inputList, inputElement, validationConfig) => {
     if(isInvalidRegex(inputList)) {
         inputElement.setCustomValidity(inputElement.dataset.errorMessage);
-        showInputError(formElement, inputElement);
+        showInputError(formElement, inputElement, validationConfig);
     } else if(isInvalidValidity(inputList)){
         inputElement.setCustomValidity("");
-        showInputError(formElement, inputElement);
+        showInputError(formElement, inputElement, validationConfig);
     }else {
-        hideInputError(formElement, inputElement);
+        hideInputError(formElement, inputElement, validationConfig);
     }
 };
 
@@ -39,18 +39,24 @@ const isInvalidRegex = (inputList) => {
 
 // Функция выключения кнопки отправки
 function handleSubmitBtn(inputList, submitBtn, inactiveButtonClass) {
-    isInvalidValidity(inputList) || isInvalidRegex(inputList) ? submitBtn.classList.add(inactiveButtonClass) : submitBtn.classList.remove(inactiveButtonClass);
+    if(isInvalidValidity(inputList) || isInvalidRegex(inputList)) {
+        submitBtn.classList.add(inactiveButtonClass);
+        submitBtn.disabled = true;
+    } else {
+        submitBtn.classList.remove(inactiveButtonClass);
+        submitBtn.disabled = false;
+    }
 }
 
 //  Функция добавленя слушателей
-const setEventListeners = (formElement, inputSelector, submitButtonSelector, inactiveButtonClass) => {
-    const inputList = Array.from(formElement.querySelectorAll(inputSelector));
-    const submitBtn = formElement.querySelector(submitButtonSelector);
+const setEventListeners = (formElement, validationConfig) => {
+    const inputList = Array.from(formElement.querySelectorAll(validationConfig.inputSelector));
+    const submitBtn = formElement.querySelector(validationConfig.submitButtonSelector);
     inputList.forEach( (inputElement) => {
         // Обработка блокировки кнопки
         inputElement.addEventListener('input', function() {
-            checkInputValidity(formElement, inputList, inputElement);
-            handleSubmitBtn(inputList, submitBtn, inactiveButtonClass);
+            checkInputValidity(formElement, inputList, inputElement, validationConfig);
+            handleSubmitBtn(inputList, submitBtn, validationConfig.inactiveButtonClass);
         })
     })
 };
@@ -58,14 +64,11 @@ const setEventListeners = (formElement, inputSelector, submitButtonSelector, ina
 // Функция валидации
 function enableValidation(validationConfig) {
     const formList = Array.from(document.querySelectorAll(validationConfig.formSelector));
-    const inputSelector = validationConfig.inputSelector;
-    const submitButtonSelector = validationConfig.submitButtonSelector;
-    const inactiveButtonClass = validationConfig.inactiveButtonClass;
     formList.forEach( (formElement) => formElement.addEventListener( 'submit', (evt) => {
         evt.preventDefault();
     }))
     formList.forEach( (formElement) => {
-        setEventListeners(formElement, inputSelector, submitButtonSelector, inactiveButtonClass);
+        setEventListeners(formElement, validationConfig);
     });
 };
 
@@ -75,7 +78,7 @@ function clearValidation(formElement, validationConfig) {
     const submitBtn = formElement.querySelector(validationConfig.submitButtonSelector);
     handleSubmitBtn(inputList, submitBtn, validationConfig.inactiveButtonClass);
     inputList.forEach( (input) => {
-        hideInputError(formElement, input);
+        hideInputError(formElement, input, validationConfig);
     })
 }
 

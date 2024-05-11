@@ -28,9 +28,6 @@ const getUserData = () => {
         headers: config.headers
     })
         .then(handleResponse)
-        .catch( (err) => {
-            console.log(err);
-        })
 }
 
 // Получение всех карточек
@@ -40,9 +37,6 @@ const getInitialCards = () => {
         headers: config.headers
     })
         .then(handleResponse)
-        .catch( (err) => {
-            console.log(err);
-        })
 }
 
 // Обновлени еданных пользователя
@@ -56,9 +50,6 @@ const updateUserData = (newName, newAbout) => {
         })
     })
         .then(handleResponse)
-        .catch( (err) => {
-            console.log(err);
-        })
 }
 
 // Добавление новой кариточки
@@ -72,9 +63,6 @@ const addCard = (cardData) => {
         })
     })
         .then(handleResponse)
-        .catch( (err) => {
-            console.log(err);
-        })
 }
 
 // Удаление карточки
@@ -84,9 +72,6 @@ const deleteCard = (cardId) => {
         headers: config.headers
     })
         .then(handleResponse)
-        .catch( (err) => {
-            console.log(err);
-        })
 }
 
 // Поставить лайк карточке
@@ -96,9 +81,6 @@ const addLikeToCard = (cardId) => {
         headers: config.headers
     })
         .then(handleResponse)
-        .catch( (err) => {
-            console.log(err);
-        })
 }
 
 // Убрать лайк карточке
@@ -108,9 +90,6 @@ const removeLikeFromCard = (cardId) => {
         headers: config.headers
     })
         .then(handleResponse)
-        .catch( (err) => {
-            console.log(err);
-        })
 }
 
 // Смена аватара
@@ -123,9 +102,6 @@ const setNewAvatar = (newAvatarLink) => {
         })
     })
         .then(handleResponse)
-        .catch( (err) => {
-            console.log(err);
-        })
 }
 
 export { getUserData, getInitialCards, updateUserData, addCard, deleteCard, addLikeToCard, removeLikeFromCard, setNewAvatar };

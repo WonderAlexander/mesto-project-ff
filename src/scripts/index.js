@@ -40,11 +40,9 @@ addBtn.addEventListener('click', () => {
     openModal(popupNewCard);
 });
 
-// Находим форму в DOM
-const formElement = document.querySelector('.popup__form');
 // Находим поля формы в DOM
-const nameInput = formElement.querySelector('.popup__input_type_name');
-const jobInput = formElement.querySelector('.popup__input_type_description');
+const nameInput = editProfileForm.querySelector('.popup__input_type_name');
+const jobInput = editProfileForm.querySelector('.popup__input_type_description');
 const profileTitle = document.querySelector('.profile__title');
 const profileJob = document.querySelector('.profile__description');
 // Находим аватар пользователя
@@ -59,12 +57,13 @@ function handleFormSubmit(evt) {
     profileJob.textContent = jobInput.value;
     // Обновление данных пользователя на сервере
     updateUserData(nameInput.value, jobInput.value)
-        .then( () => editLoadingState(false, editProfileFormBtn))
+        .then(() => {
+            closeModal(popupEdit);
+        })
         .catch( (err) => {
             console.log(err);
         })
-    closeModal(popupEdit);
-    evt.target.reset();
+        .finally( () =>  editLoadingState(false, editProfileFormBtn))
 }
 
 // Сброс полей формы
@@ -92,12 +91,14 @@ function handleCardFormSubmit(evt) {
     // Добавление карточки
     addCard(newCard)
         .then( (data) => cardsList.prepend(createCard(data, deleteCard, handleCardLikes, handleImgModal, user)))
-        .then( () =>     editLoadingState(false, addCardFromBtn))
+        .then( () => {
+            closeModal(popupNewCard );
+            resetCardForm(evt.target);
+        })
         .catch( (err) => {
             console.log(err);
         })
-    closeModal(popupNewCard );
-    resetCardForm(evt.target);
+        .finally( () => editLoadingState(false, addCardFromBtn))
 }
 
 // Функци открытия попапа с картинкой карточки
@@ -110,7 +111,7 @@ function handleImgModal(card) {
 
 // Прикрепляем обработчик к форме:
 // он будет следить за событием “submit” - «отправка»
-formElement.addEventListener('submit', handleFormSubmit);
+editProfileForm.addEventListener('submit', handleFormSubmit);
 const popupAdd = document.querySelector('.popup_type_new-card');
 const formAdd = popupAdd.querySelector('.popup__form');
 
@@ -125,6 +126,7 @@ const validationConfig = {
     inputErrorClass: 'popup__input_type_error',
     errorClass: 'popup__error_visible'
 };
+
 enableValidation(validationConfig);
 
 // API
@@ -143,10 +145,10 @@ Promise.all([getUserData(), getInitialCards()])
         initialCards.forEach( card => {
             cardsList.append(createCard(card, deleteCard, handleCardLikes, handleImgModal, user));
         })
-        .catch( (err) => {
-            console.log(err);
-        })
-})
+    })
+    .catch( (err) => {
+        console.log(err);
+    })
 
 // Функция отправки формы изменения аватара
 const newAvatarField = popupEditAvatar.querySelector('.popup__input_type_url');
@@ -168,12 +170,12 @@ function editAvatarFormSubit(evt) {
         profileAvatar.style.backgroundImage = `url('${response.avatar}')`;
     })
     .then( () => {
-        editLoadingState(false, editAvatarButton)
+        closeModal(popupEditAvatar );
     })
     .catch( (err) => {
         console.log(err);
     })
-    closeModal(popupEditAvatar );
+    .finally( () => editLoadingState(false, editAvatarButton))
 }
 
 newAvatarForm.addEventListener('submit', (evt) => editAvatarFormSubit(evt));

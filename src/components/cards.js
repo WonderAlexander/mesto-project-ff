@@ -22,6 +22,9 @@ function createCard(cardData, deleteFunction, likeFunction, handleImgModal, user
     deleteCardBtn.addEventListener('click', function () {
       deleteFunction(newCard, cardData);
     });
+    if(cardData.likes.some( (like) => like.name === user.name)) {
+      newCard.querySelector('.card__like-button').classList.add('card__like-button_is-active');
+    }
     const addLikeBtn = newCard.querySelector('.card__like-button');
     addLikeBtn.addEventListener('click', (evt) => handleCardLikes(evt, cardData, user, cardLikes));
     return newCard;
